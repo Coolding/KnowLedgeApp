@@ -1,0 +1,536 @@
+﻿Raact-Native 定位APP开发总结
+
+
+调用本组件的方法：this.getAvailableGpsCount()
+注意要加括号
+************************************************************************************************
+调用其他组件的内部方法
+如果是组件的内部方法，需要实例化后再调用，例：
+
+class TestClass extends Component {
+    render(){
+        return null
+    }
+    alertFunc(e){
+        alert(e)
+    }
+}
+class TestComponent extends Component {
+    render(){
+        return(
+            <View>
+                <TestClass ref={e=>this.TestClass=e}/>
+                <Button onPress = {this.TestClass.alertFunc('test')}>
+            </View>
+        )
+    }
+}
+如果这两个组件是在不同的文件里面，注意还要先引用组件
+********************************************************************************************
+button放在scrollView里面，在TextInput里面输入内容后，要点击button时，要点击两次才有反应
+********************************************************************************************
+
+数组用map来显示成一系列相同类型组件的写法：
+Lv0="22-33'44-55"
+
+<View>
+ {              //这个大括号不能漏掉
+          
+       this.state.Lv0.split("-").map(       //把字符串Lv0用split分割成数组
+         (Level0,index)=>{                  Level0表示数组的每一个元素，index表示数组的索引
+            return(                          //注意这个return不能漏掉
+                <Text>{Level0}</Text>         // Level0要用大括号！
+            )
+             })
+
+  }
+</View>
+                
+********************************************************************************************
+
+expected dynamic type string but had type object
+出现这个错误提示有可能是把一个object赋值给了一个string类型的变量
+
+********************************************************************************************
+
+
+出错处理
+  try {
+                 AsyncStorage.removeItem(key)
+                         
+                }catch (error){
+                    alert(key+'失败',+error);
+                }
+
+
+********************************************************************************************
+arrayObject.length 数组长度
+********************************************************************************************
+
+转义字符：同HTML规则
+要输出>直接用&gt;代替即可
+
+引用某个文件
+import Login from './Login';
+
+类型判断 typeof(data)="string" 不能写成typeof(data)=string
+alert(data) 如果data是json格式，且alert结果显示object
+那么可以用alert(JSON.stringify(data)) 来显示data对象的内容
+
+*************************************************************************************
+onPress调用函数的几种写法
+
+onPress={this.updateVersion}
+onPress={()=>this.confirmConsBoxRelate(rowData.AssetInfo)}
+onPress={()=>alert('haha')}
+*******************************************************************************************
+调用系统浏览器打开外部链接
+首先要引用Linking,
+var url = 'http://baidu.com'
+Linking.openURL(url)  
+.catch((err)=>{  
+console.log('An error occurred', err);  
+});
+********************************************************
+
+webView组件使用相对路径显示网页
+source={require('./map.html')} 
+×××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××
+//去左空格;
+function ltrim(s){
+  return s.replace(/(^\s*)/g, "");
+}
+//去右空格;
+function rtrim(s){
+  return s.replace(/(\s*$)/g, "");
+}
+//去左右空格;
+function trim(s){
+  return s.replace(/(^\s*)|(\s*$)/g, "");
+}
+××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××
+多行注释
+{/*   */}
+*****************************************************************************************
+对数组赋值之前请先清空
+x=[];
+然后再赋值，否则可能出错提示“attempted to assign to readonly property”
+*****************************************************************************************
+怎么判断某个值是否是undefined，不能用这个值和字符串"undefined"去比较,比较的结果会是false. 
+ if(typeof(value)=="undefined"){ 
+    alert("undefined"); 
+} 
+*****************************************************************************************
+导航（页面跳转）navigator的使用方法
+从0.44版本开始，Navigator不再从'react-native'中引入，而是需要npm install react-native-deprecated-custom-components -save
+并在代码中import {Navigator} from 'react-native-deprecated-custom-components'
+ 
+同时还要引用等下要显示（跳转）的页面
+import Login from './Login';
+主页面
+<Navigator
+              initialRoute={{ name: 'Login', component: Login }}
+              configureScene={(route) => {
+                return Navigator.SceneConfigs.VerticalDownSwipeJump;
+              }}
+              renderScene={(route, navigator) => {
+                let Component = route.component;
+                return <Component {...route.params} navigator={navigator} />
+              }} />  
+注意<Navigator>组件是用来导航用的，并不会显示出一个实体
+在跳转后的页面，如果要跳转到其他页面，可以使用下面的代码
+const { navigator } = this.props;
+ navigator.replace({
+                name: 'scanSearchResult',
+                component: scanSearchResult,
+              params: {
+                AllScanedAssetNo: b
+              }});?????????????????????????????
+***************************************************************************************
+持久化存储AsyncStorage
+存储在手机上，程序关闭或手机重启后还是可以读取到
+注意，一定要先import { 
+AsyncStorage
+} from 'react-native'; 
+不然就会不起作用或者出错
+注意，写入的内容是键值对形式，值必须是字符串格式！！！！否则有可能提示expected dynamic type string but had type…………
+，如果是数字，可以用下面的方法转化（即加上一个''）
+AsyncStorage.setItem('userID', data+''); 
+移除
+AsyncStorage.removeItem(key)
+读取
+AsyncStorage.getItem('tel').then((value) => tel=value  )  
+遍历
+AsyncStorage.getAllKeys().then(  
+            (keys)=>{ 
+                  let keyslength = keys.length;  
+                  for (let i=0; i<keyslength;i++) { 
+                        alert(keys[i]) }
+            }
+        )
+
+static multiGet(keys,callback:(errors,result)):获取多项，其中keys是字符串数组。
+static multiSet(keyValuePairs,callback:(errors)):设置多项，其中keyValuePairs是字符串的二维数组。
+static multiRemove(keys,callback(errors)):删除多项，其中keys是字符串数组。
+static multiMerge(keyValuePairs,callback:(errors)):多个键值合并，其中keyValuePairs是字符串中的二维数组
+
+用multiSet设置的键值对数组也可以用setItem和getItem单独对其中的某个键值对来进行操作
+ AsyncStorage.multiSet([['Search1',''],['Search2',''],['Search3','333'],['Search4','444']] );   
+AsyncStorage.setItem('SearchStorageIndex','2')  //存储到第几个搜索记录
+AsyncStorage.setItem('Search'+'2','222')  //存储到第几个搜索记录
+AsyncStorage.getItem('Search2').then((value) => alert(value)  )       
+
+******************************************************************************************
+样式总结
+1.设置View的样式要使用backgroundColor，使用color无效
+ <View style={{backgroundColor:"#ff9a00"}}>
+2. 有一些组件如Botton设置宽度好像无效，可以用一个View容器来包裹Botton，然后设置View的大小即可
+3.TextInput:
+   去掉输入框里面的下划线：underlineColorAndroid="transparent"
+4.Botton好像无法实现圆角形状？不管是设置Botton本身的border还是设置其外层View的border
+可使用TouchableOpacity来实现
+5.Text:
+字体颜色：color ，居中（横向）textAlign:"center"
+6.多个样式属性的写法：
+<View style={[styles.textViewStyle,{marginTop:10,height:80}]}>
+ ******************************************************************************************
+
+ 强制刷新  this.forceUpdate();
+  ******************************************************************************************
+
+调试方法：
+在react-native开发时，在摇一摇--开发菜单中选择Debug JS Remotely，然后在代码中使用console.log输出想要用于辅助进行调试的信息，
+
+this.setState的坑
+使用this.setState设置某个属性s的值之后，如果马上在随后几行的代码中调用这个s，将无法得到刚刚设置的这个值（？？）
+
+listView用法
+初始化
+constructor(props) {
+    super(props);
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
+        dataSource: ds.cloneWithRows(['row 1', 'row 2']),
+    };
+  }
+获取数据
+  this.setState({dataSource:this.state.dataSource.cloneWithRows(data['JustInsertRecord'])}) 
+  显示内容
+<ListView
+          dataSource={this.state.dataSource}
+          renderRow={(rowData) => <Text>{rowData.AssetInfo}</Text>} />
+          注：如果rowData是字符串，则<Text>{rowData}</Text>
+          如果dataSource是数据库查询返回的几条记录，则使用<Text>{rowData.AssetInfo}</Text>来获取其中某个字段的值
+
+ListView结合button的写法
+<ListView
+          dataSource={this.state.dataSource}
+          renderRow={(rowData,rowID) =>             
+            <View>
+              <Text> 
+                  表号:{rowData.AssetInfo}{'\n'}
+                  地址:{rowData.elecAddr}{'\n'}     
+              </Text>
+              <Button
+                  style={{width:200}}
+                  onPress={()=>this.confirmConsBoxRelate(rowData.AssetInfo,this.state.boxAssetNo)}
+                  title="确认"
+                  color="#00FF00"
+                /> 
+            </View>       
+            }           
+      />
+
+文本换行显示：{'\n'}
+<Text>
+第一行{'\n'}
+第二行{'\n'}
+</Text>
+
+错误提示：
+Adjacent JSX elements must be wrapped in an enclosing tag.
+render方法中必须只能包含一个根元素。解决办法，添加一个根元素如<View>
+
+fetch用法
+
+   let formData=new FormData();                 
+    formData.append("InsertSerial","111");  
+    formData.append("boxAssetNo","22");         
+    let url="http://1.loactionapp.applinzi.com/boxConsRelateCheck";
+    fetch(url,{method:"POST",headers:{},body:formData}).then(response => response.json())  //如果post内容为空，直接把body:formData去掉，而不要写成body:{},否则会出错    .then(data => {     
+        this.setState({dataSource:data['JustInsertRecord']}) 
+    })
+    .catch(e => 
+    {
+      console.log("获取数据失败");
+       alert(e)
+      this.setState({uploadResult:e})
+    }
+    ); 
+
+
+onPress={()=>this.confirmConsBoxRelate(rowData.AssetInfo)}
+和onPress={this.confirmConsBoxRelate(rowData.AssetInfo)}写法的区别？？？
+带参数的函数要使用前面一个写法，才能正确调用，使用后面一个写法会在渲染时直接执行（？？）
+
+注意函数的个数：例如listView的方法renderRow默认有四个参数(rowData, sectionID, rowID, highlightRow)
+如果在写代码时写成 renderRow={(rowData,rowID) =>()}
+那么实际上传递给rowID的是sectionID的值
+
+数组使用
+定义数组var TextFirstColor = ["red","red"]
+注意，定义数组不能用var TextFirstColor =new Array (["red","red"]),调用会出错（为什么？？）
+调用 TextFirstColor[0]
+
+
+
+setState 是异步执行的，是等到要渲染时才执行的，所以如果你的一串代码依赖于setState（即用setState改变某个变量后，后面的代码依赖于这个变量改变后的值
+）,那么就可能会出现不可描述的错误。 setState 函数接受两个参数，一个是一个对象，就是设置的状态，还有一个是一个回调函数，就是设置状态成功之后执行的，
+可以这样写
+this.setState({data:data}, function () {
+       console.log(that.state.data);
+   });
+
+   尽量避免在一个循环语句中循环修改某一个state变量的值。
+   可以先用一个临时变量代替
+
+
+   百度地图总结
+  显示驾车导航方案：注意region=厦门这个去掉会无法正确显示，但是根据百度技术文档说明，这个应该是可选项，为什么？
+  http://api.map.baidu.com/direction?origin=24.496860384,118.04624843&destination=24.4445926636,118.101010987&mode=driving&region=厦门&output=html
+  
+我的百度ak：ak=hAYszgjy50mrlSDBIusNfSc4
+
+经纬度to地址
+http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=24.572509576676,118.05805154937&output=json&pois=0&ak=hAYszgjy50mrlSDBIusNfSc4
+ 
+ 百度地图相关代码（python）
+ #地址到百度GPS
+ 注意：对于address字段可能会出现中文或其它一些特殊字符（如：空格），对于类似的字符要进行编码处理，编码成 UTF-8 字符的二字符十六进制值，凡是不在下表中的字符都要进行编码。
+ 参考http://lbsyun.baidu.com/index.php?title=webapi/guide/webservice-geocoding
+def addrToBaiduGPS(addr):
+    OpenUrl="http://api.map.baidu.com/geocoder/v2/?address=%s&output=json&ak=hAYszgjy50mrlSDBIusNfSc4&callback=showLocation" % (addr)
+    AddrResult=getHtmlSourceCode(OpenUrl) 
+    BaiduGps=re.findall(r'"lng":.{1,}?},',AddrResult)[0]
+    BaiduGps=BaiduGps.replace('"lng":',"")
+    BaiduGps=BaiduGps.replace('"lat":',"")
+    BaiduGps=BaiduGps.replace("},","")
+    return BaiduGps.split(',')
+
+#将GPS坐标转化为百度坐标格式
+def GpsToBaidu(lng,lat):
+    addr='%s,%s' % (lng,lat)
+    OpenUrl="http://api.map.baidu.com/geoconv/v1/?coords=%s&from=1&to=5&ak=hAYszgjy50mrlSDBIusNfSc4" % (addr)
+    AddrResult=getHtmlSourceCode(OpenUrl) 
+    #print(AddrResult)
+    #print("原始GPS经纬度 %s,转换为百度经纬度格式结果为:  %s" % (addr,re.findall(r'"x":.{1,}?}',AddrResult)[0]))
+    BaiduGps=re.findall(r'"x":.{1,}?}',AddrResult)[0]
+    BaiduGps=BaiduGps.replace('"x":',"")
+    BaiduGps=BaiduGps.replace('"y":',"")
+    BaiduGps=BaiduGps.replace("}","")
+    return BaiduGps.split(',')
+
+#将百度经纬度转化为地址
+def BaiduGPStoAddr(lng,lat):
+    openUrl="http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=%s,%s&output=json&pois=0&ak=hAYszgjy50mrlSDBIusNfSc4" %(lat,lng)
+    addr=getHtmlSourceCode(openUrl)
+    #return addr['formatted_address']
+    pos1=addr.find("formatted_address")
+    pos2=addr.find("business")
+    return addr[pos1+20:pos2-3]
+
+
+#根据两个百度地图坐标计算距离,单位米：例如del.getDistanceFromXtoY(39.965780080447,116.28215586757,39.965780080447,116.3521416286)
+def getDistanceFromXtoY(lat_a,lng_a,lat_b,lng_b):
+    pk = 180 / 3.14169
+    a1 = float(lat_a)/pk
+    a2 = float(lng_a)/pk
+    b1 = float(lat_b)/pk
+    b2 = float(lng_b)/pk
+    #a1 = lat_a/pk
+    #a2 = lng_a/pk
+    #b1 = lat_b/pk
+    #b2 = lng_b/pk
+    t1 = math.cos(a1) * math.cos(a2) * math.cos(b1) * math.cos(b2)
+    t2 = math.cos(a1) * math.sin(a2) * math.cos(b1) * math.sin(b2)
+    t3 = math.sin(a1) * math.sin(b1)
+    tt = math.acos(t1 + t2 + t3)
+    #print(float(6366000 * tt))
+    return float(6366000 * tt)
+
+以下为javascript代码
+地址到百度GPS
+let addr='思明区东浦一里建发花园191号502'
+let url="http://api.map.baidu.com/geocoder/v2/?address="+addr+"&output=json&ak=hAYszgjy50mrlSDBIusNfSc4"
+ 
+fetch(url,{method:"GET"}).then(response => response.json())
+.then(data => {
+    console.log(data)
+    console.log(data['result']['confidence'])    
+    console.log(data['result']['location']['lng'])     
+    })    
+.catch(e => console.log("Oops, error", e))
+
+//将GPS坐标转化为百度坐标格式
+function GpsToBaidu(lng,lat){    
+    let url="http://api.map.baidu.com/geoconv/v1/?coords="+lng+','+lat+"&from=1&to=5&ak=hAYszgjy50mrlSDBIusNfSc4"
+    fetch(url,{method:"GET"}).then(response => response.json())
+    .then(data => {
+      console.log(data['result'][0])
+      return data['result'][0] 
+    }) 
+ 
+}
+
+let lng=118.05793
+let lat=24.569379
+BaiduGPS=GpsToBaidu(lng,lat)
+BaiduGPSLng=BaiduGPS['x']
+BaiduGPSLat=BaiduGPS['y']
+
+#根据两个百度地图坐标计算距离,单位米：例如del.getDistanceFromXtoY(39.965780080447,116.28215586757,39.965780080447,116.3521416286)
+function getDistanceFromXtoY(lat_a,lng_a,lat_b,lng_b){
+    let pk = 180 / 3.14169
+    let a1 = float(lat_a)/pk
+    let a2 = float(lng_a)/pk
+    let b1 = float(lat_b)/pk
+    let b2 = float(lng_b)/pk
+    let t1 = Math.cos(a1) * Math.cos(a2) * Math.cos(b1) * Math.cos(b2)
+    let t2 = Math.cos(a1) * Math.sin(a2) * Math.cos(b1) * Math.sin(b2)
+    let t3 = Math.sin(a1) * Math.sin(b1)
+    let tt = Math.acos(t1 + t2 + t3)
+    console.log(float(6366000 * tt))
+    return float(6366000 * tt)
+}
+***************************************************************************************************************************************
+常见错误：
+（1）RawText " " must be wrapped in an explicit <Text> component
+<View> <Text>第1个</Text></View>会出错
+提示 RawText " " must be wrapped in an explicit <Text> component
+改成<View><Text>第1个</Text></View> 就可以了（去除空格）
+（2）组件名要大写！！不管是你自己创建的组件还是使用原有组件
+如class greeting extends Component是错的
+要写出class Greeting extends Component
+<text></text>也是错的要写为<Text></Text>
+否则会提示Expected a component class,got [Object Object ]
+
+
+**************************************************************************************************************************************
+创建自己的组件
+class Greeting extends Component {
+  render() {
+    return (
+      <Text>Hello {this.props.name}!</Text>
+    );
+  }
+}
+调用时这么写
+<Greeting name='Valeera' />
+
+要循环显示可以这么写 
+class Tbb extends Component {  
+ render() {
+    let a=[{id:1,index:1},{id:2,index:2},{id:3,index:3},];
+      return (
+        <View>
+        {  a.map( function(x){ return <Text key={x.id}>第{x.index}个</Text>} )   }
+        </View>
+        );  
+    
+ }
+}
+注意，不能用for循环
+另外key属性是必不可少的，虽然没什么用处，但是没有的话就会提示 Each child in an array or iterator should have a unique "key".
+key属性放在最外层的组件里面就可以，例如Text外层还有个View，那么把key属性放在View里面才起作用
+
+
+***************************************************************************************************************************
+本地读取和写入
+writeStor = () => {   
+    storage.save({
+    key: 'userData',  // 注意:请不要在key中使用_下划线符号!
+    rawData: { 
+      username: this.state.name,
+      tel: this.state.tel,
+      department:this.state.department,
+    },
+    // 如果不指定过期时间，则会使用defaultExpires参数
+    // 如果设为null，则永不过期
+    expires: null
+  }); 
+}
+
+readStor =() => {  
+   
+    storage.load({
+    key: 'userData',
+    // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
+    autoSync: true,
+    // syncInBackground(默认为true)意味着如果数据过期，
+    // 在调用sync方法的同时先返回已经过期的数据。
+    // 设置为false的话，则始终强制返回sync方法提供的最新数据(当然会需要更多等待时间)。
+    syncInBackground: true,
+    // 你还可以给sync方法传递额外的参数
+    syncParams: {
+      extraFetchOptions: {
+        // 各种参数
+      },
+      someFlag: true,
+    },
+  }).then(ret => {
+    // 如果找到数据，则在then方法中返回
+    // 注意：这是异步返回的结果（不了解异步请自行搜索学习）
+    // 你只能在then这个方法内继续处理ret数据
+    // 而不能在then以外处理
+    // 也没有办法“变成”同步返回
+    // 你也可以使用“看似”同步的async/await语法
+    alert(ret.username);
+    alert("读取成功")
+    return ret
+  }).catch(err => {
+    //如果没有找到数据且没有sync方法，
+    //或者有其他异常，则在catch中返回
+    console.warn(err.message);
+    alert("读取失败")
+    switch (err.name) {
+        case 'NotFoundError':
+            // TODO;
+            break;
+        case 'ExpiredError':
+            // TODO
+            break;
+    }
+  })
+}
+
+  
+
+
+
+
+
+
+
+
+=======================================================================================================================
+SQL:
+修改语句：UPDATE Person SET FirstName = 'Fred' WHERE LastName = 'Wilson' 
+=======================================================================================================================
+JavaScript 
+表示或者要用 || 而不是用or
+表示和要用 &&  ，表示not用！
+
+数字转化为字符串 用 String(4) 注意首字母S要大写
+
+判断字符串是否包含某string对象用 indexof
+var Cts = "bblText";     
+if(Cts.indexOf("Text") > =0 )   
+{   
+    alert('Cts中包含Text字符串');     //注意序号是从0开始的
+} 
+
+遍历字典用for in
+var mycomputer = new Computer("Acer", 500); 
+for (var prop in mycomputer) { 
+    alert(mycomputer[prop]); 
+} 

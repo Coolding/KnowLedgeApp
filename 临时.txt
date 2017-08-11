@@ -1,0 +1,18 @@
+    <View>
+                  {    
+                   this.state.knowLedgeArray.map(
+                      (knowLedge,index)=>{ 
+                          return(
+                              <TouchableOpacity key={index}
+                                    onPress={ ()=>alert(knowLedge['answer'])}>         
+                                    <View style={{backgroundColor:"white",justifyContent: 'center',alignItems: 'center',width:w,height:70,marginBottom:2}}>
+                                        <Text style={{fontSize: 25,marginBottom:5,lineHeight:45}}>{knowLedge['ask']}</Text>
+                                    </View>     
+                              </TouchableOpacity>
+                          )
+                        })
+                   
+                  }
+            </View>
+
+            {this.state.knowLedgeArray[this.state.CurrentKnowLedgeIndex]['ask']}
