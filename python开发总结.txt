@@ -49,3 +49,10 @@ now = datetime.now()
 aDay = timedelta(days=1)
 now = now + aDay
 print now.strftime('%Y-%m-%d')
+
+当前日期时间的格式化字符串
+time.strftime('%Y-%m-%d %H:%M:%S')  //字符串类型
+
+当前时间
+import datetime
+datetime.datetime.now()  //时间类型变量

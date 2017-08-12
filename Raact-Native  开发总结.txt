@@ -1,7 +1,15 @@
 ﻿Raact-Native 定位APP开发总结
 
-
-调用本组件的方法：this.getAvailableGpsCount()
+************************************************************************************************
+声明全局变量
+声明：
+global.a = 1;
+声明之后可以在任意一个文件（.js）中调用
+<Text>{a}</Text>
+也可以对其进行操作
+如：a=a+1
+************************************************************************************************
+调用本组件的方法(函数）：this.getAvailableGpsCount()
 注意要加括号
 ************************************************************************************************
 调用其他组件的内部方法
@@ -160,12 +168,12 @@ AsyncStorage.setItem('userID', data+'');
 AsyncStorage.removeItem(key)
 读取
 AsyncStorage.getItem('tel').then((value) => tel=value  )  
-遍历
+遍历(下面的语句只是遍历key，如果要获取到key对应的值，还是要使用AsyncStorage.getItem('tel').then((value) => tel=value  )  方法
 AsyncStorage.getAllKeys().then(  
             (keys)=>{ 
                   let keyslength = keys.length;  
                   for (let i=0; i<keyslength;i++) { 
-                        alert(keys[i]) }
+                        alert(keys[i]) }   
             }
         )
 
@@ -534,3 +542,31 @@ var mycomputer = new Computer("Acer", 500);
 for (var prop in mycomputer) { 
     alert(mycomputer[prop]); 
 } 
+
+新建一个字典（dict）
+var knowLedgeCountDict=new Array();  //注意Array的A大写
+赋值knowLedgeCountDict['key']='value'
+
+
+判断是否undefined
+if (typeof(reValue) == "undefined") { 
+   alert("undefined"); 
+}  
+typeof 返回的是字符串，有六种可能："number"、"string"、"boolean"、"object"、"function"、"undefined"
+
+三元运算符
+1>0?999:666：如果1>0，则显示999，否则显示666
+可以用于在reactNative中根据不同条件显示不同的文字
+注意三元运算符的优先级别较低，如果几个三元运算符相加，每个三元运算符要先放在()里面，否则结算结果会不正确。
+
+清空数组（字典）的三种方式
+var ary = [1,2,3,4];
+ary.splice(0,ary.length);  //方法1
+ary.length = 0;   //方法2 
+ary = [];    //方法3,亲测好用
+
+
+获取当前时间
+var date = new Date();//该对象包含系统时间
+    var strDate = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes+':'+date.getSeconds;
+    alert(strDate);

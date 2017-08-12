@@ -13,10 +13,12 @@ import {
 import {
   StackNavigator,
 } from 'react-navigation';
+import Browse from './Browse';
 
 var w=Dimensions.get('window').width;
 var h=Dimensions.get('window').height;  
 var CurrentKnowLedgeIndex=0;
+var StartStudyTime=''
 
 export default class ShowKnowledge extends Component  {
 constructor(props) {  
@@ -31,34 +33,37 @@ constructor(props) {
 
 componentWillMount() {
   //获取知识内容
+   CurrentKnowLedgeIndex=0
     const { params } = this.props.navigation.state;
-    let url="http://knowledgeapp.applinzi.com/xkeuwjskdertc/GetKnowledge/" + params.Category;
-    fetch(url,{method:"POST",headers:{}}).then(response => response.json())
+    let formData=new FormData();             
+    formData.append("Category",params.Category);  
+    formData.append("knowLedgeType",params.knowLedgeType)    
+    let url="http://knowledgeapp.applinzi.com/xkeuwjskdertc/GetKnowledge/";
+    fetch(url,{method:"POST",headers:{},body:formData}).then(response => response.json())
     .then(data =>{
+         if(data.length>0){
            this.setState({knowLedgeArray:data}) 
-           this.setState ({showAsk:this.state.knowLedgeArray[0]['ask']}) 
-           this.setState ({ID:this.state.knowLedgeArray[0]['ID']}) 
+           this.setState ({showAsk:data[CurrentKnowLedgeIndex]['ask']}) 
+           this.setState ({ID:data[CurrentKnowLedgeIndex]['ID']}) 
+           let date = new Date();//记录开始学习的时间
+            StartStudyTime = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+         }
+         else
+         {
+           alert("没有相关的知识")
+           this.props.navigation.navigate('Browse')
+         }
      }
        )
     .catch(e => alert(e))
 
 }
 
-ShowNext=()=>{  
-     
-     CurrentKnowLedgeIndex=CurrentKnowLedgeIndex+1
-     if(CurrentKnowLedgeIndex<(this.state.knowLedgeArray.length)){
-        this.setState ({showAsk:this.state.knowLedgeArray[CurrentKnowLedgeIndex]['ask']}) 
-        this.setState ({ID:this.state.knowLedgeArray[CurrentKnowLedgeIndex]['ID']})
-        this.setState ({answer:''})
-     }
-     else
-        alert('已经是最后一条')    
-
-}
+ 
 
 ShowAnswer=()=>{  
        this.setState ({answer:this.state.knowLedgeArray[CurrentKnowLedgeIndex]['answer']})  
+       
 }
 
 
@@ -67,6 +72,7 @@ Mark=(Content)=>{
     let formData=new FormData();             
     formData.append("ID",this.state.ID);  
     formData.append("familiar",Content)
+    formData.append("StartStudyTime",StartStudyTime)
     fetch(url,{method:"POST",headers:{},body:formData}).then(response => response)
     .then(data => {console.log(data)})
 
@@ -75,9 +81,14 @@ Mark=(Content)=>{
         this.setState ({showAsk:this.state.knowLedgeArray[CurrentKnowLedgeIndex]['ask']}) 
         this.setState ({ID:this.state.knowLedgeArray[CurrentKnowLedgeIndex]['ID']})
         this.setState ({answer:''})
+        let date = new Date();//记录开始学习的时间
+        StartStudyTime = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+        
      }
-     else
-        alert('已经是最后一条') 
+     else{
+        alert('学习完成')
+         this.props.navigation.navigate('Browse')
+     }
 
 }
 
@@ -93,18 +104,28 @@ Mark=(Content)=>{
              <View style={{backgroundColor:"white",justifyContent: 'center',alignItems: 'flex-start',width:w,height:70,marginBottom:1}}>
                      <Text style={{fontSize: 18,marginBottom:5,lineHeight:35}}>{this.state.showAsk}</Text>
              </View> 
-             <View style={{backgroundColor:"white",justifyContent: 'flex-start',alignItems: 'flex-start',width:w,height:270,marginBottom:1}}>
+             <View style={{backgroundColor:"white",justifyContent: 'flex-start',alignItems: 'flex-start',width:w,height:290,marginBottom:1}}>
                <ScrollView>
                      <Text style={{fontSize:18,marginBottom:5,fontFamily:'Verdana bold',textAlign:'auto'}}>{this.state.answer}</Text>
                 </ScrollView>
              </View> 
-              <View style={{justifyContent: 'center',alignItems: 'center',width:w,height:70,marginBottom:5}}>
+              <View style={{backgroundColor:"white",flexDirection: 'row',justifyContent: 'center',alignItems: 'center',width:w,height:55,marginBottom:5}}>
+                   <View style={{backgroundColor:"white",justifyContent: 'center',alignItems: 'center',width:0.5*w,height:55,marginBottom:5}}>
                      <Button           
                           onPress={this.ShowAnswer}
                           title="显示答案"                
                           color="#1DBAF1"                        
                           accessibilityLabel=""
                           />
+                    </View>
+                    <View style={{backgroundColor:"white",justifyContent: 'center',alignItems: 'center',width:0.5*w,height:55,marginBottom:5}}>
+                      <Button           
+                          onPress={()=>this.props.navigation.navigate('Browse')}
+                          title="结束学习"                
+                          color="#1DBAF1"                        
+                          accessibilityLabel=""
+                          />
+                      </View>
              </View> 
 
              <View style={{backgroundColor:"white",flexDirection: 'row',justifyContent: 'flex-start',alignItems: 'center',width:w,height:70,marginBottom:2}}>
@@ -146,12 +167,7 @@ Mark=(Content)=>{
                   </View>
 
             </View>
-             <Button           
-                    onPress={this.ShowNext}
-                    title="显示下一条"                
-                    color="#1DBAF1"                        
-                    accessibilityLabel=""
-                    />
+ 
            </View>
     );
   }
