@@ -37,6 +37,29 @@ class TestComponent extends Component {
 ********************************************************************************************
 button放在scrollView里面，在TextInput里面输入内容后，要点击button时，要点击两次才有反应
 ********************************************************************************************
+连按2次安卓后退键则退出APP
+先importBackHandler,  ToastAndroid,
+然后：
+componentWillMount(){
+        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+}
+
+componentWillUnmount() {
+       BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+}
+
+onBackAndroid = () => {
+       if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+           //最近2秒内按过back键，可以退出应用。
+            return false;
+        }
+
+this.lastBackPressed = Date.now();
+ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
+return true;
+
+};
+********************************************************************************************
 
 数组用map来显示成一系列相同类型组件的写法：
 Lv0="22-33'44-55"
@@ -546,6 +569,9 @@ for (var prop in mycomputer) {
 新建一个字典（dict）
 var knowLedgeCountDict=new Array();  //注意Array的A大写
 赋值knowLedgeCountDict['key']='value'
+判断key是否存在 用in
+d={'body':1}
+print 'body' in d.keys()
 
 
 判断是否undefined
@@ -568,5 +594,31 @@ ary = [];    //方法3,亲测好用
 
 获取当前时间
 var date = new Date();//该对象包含系统时间
-    var strDate = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes+':'+date.getSeconds;
-    alert(strDate);
+var strDate = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes+':'+date.getSeconds;
+alert(strDate);
+日期加减
+不能直接写成
+var date = new Date();
+date=date-1
+方法1：
+var strDate = date.getDate()-1
+方法2：用setDate函数
+ d.setDate(d.getDate()+days); 
+
+
+退出循环,使用break;退出当前循环继续下一个循环,使用continue
+
+ js判断数组或对象中的key是否存在
+ary.hasOwnProperty(key); 或 obj.hasOwnProperty(key);
+
+×××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××
+Mysql
+1. MySQL 字符串截取函数：left(), right(), substring(), substring_index()。还有 mid(), substr()。其中，mid(), substr() 等价于 substring() 函数，substring() 的功能非常强大和灵活。
+
+  
+GROUP BY 日期
+
+2.数字保留小数点后2位
+format(23456.789,2);  
+
+×××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××

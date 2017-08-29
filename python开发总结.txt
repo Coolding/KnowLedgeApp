@@ -56,3 +56,17 @@ time.strftime('%Y-%m-%d %H:%M:%S')  //字符串类型
 当前时间
 import datetime
 datetime.datetime.now()  //时间类型变量
+
+字符串转化为日期格式
+StartStudyTime='2017-08-13 09:57:34'
+da=time.strptime(StartStudyTime,"%Y-%m-%d %H:%M:%S")   #先将字符串转化为time类型
+da1=datetime.datetime(da[0],da[1],da[2],da[3],da[4],da[5])    #将time类型转化为datetime.datetime类型，以便于后面相减计算学习的时长
+有没有一步转化的方法？
+
+
+两个日期相减
+print (d1 - d2).days  #计算两个日期相差天数的计算。
+
+starttime = datetime.datetime.now()
+endtime = datetime.datetime.now()
+print (endtime - starttime).seconds  #计算运行时间的例子（相差的秒数）

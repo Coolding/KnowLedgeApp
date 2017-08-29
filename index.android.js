@@ -15,7 +15,9 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  AsyncStorage
+  AsyncStorage,
+  BackHandler,
+  ToastAndroid,
 } from 'react-native';
 import {
   StackNavigator,
@@ -26,6 +28,9 @@ import Calc from './Calc';
 import Category from './Category';
 import ShowOption from './ShowOption';
 import ShowKnowledge from './ShowKnowledge';
+import editKnowLedge from './editKnowLedge';
+import ShowSearchKnowLedge from './ShowSearchKnowLedge';
+
 
 
 
@@ -45,9 +50,13 @@ export default class HomeScreen extends Component {
   }  
 
 static navigationOptions = {
-    title: '浏览',//在导航中显示的标题内容
-    tabBarVisible:true,
+     header:null
   };
+
+
+
+ 
+
 
   render() {
     return (
@@ -132,6 +141,9 @@ const KnowLedgeApp = StackNavigator({
   ShowOption:{ screen: ShowOption },
   ShowKnowledge:{ screen: ShowKnowledge },
   Browse:{ screen: Browse },
+  editKnowLedge:{ screen: editKnowLedge },
+  index:{screen: HomeScreen},
+  ShowSearchKnowLedge:{screen: ShowSearchKnowLedge}
 });
 
 
