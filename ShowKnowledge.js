@@ -190,7 +190,7 @@ Mark=(Content)=>{
             </View>  
               
 
-             <View style={{backgroundColor:"white",justifyContent: 'flex-start',alignItems: 'flex-start',width:w,height:75,margintTop:1,marginBottom:1}}>
+             <View style={{backgroundColor:"white",justifyContent: 'flex-start',alignItems: 'flex-start',width:w,height:75,marginTop:1,marginBottom:1}}>
                      <Text style={{backgroundColor:"white",justifyContent: 'flex-start',fontSize:18,marginLeft:5,marginRight:5,marginBottom:2,}}>{this.state.showAsk}</Text>
                      <Text style={{backgroundColor:"white",justifyContent: 'flex-start',color:'#A7A7A7',fontSize:15,marginLeft:5,marginRight:5,marginBottom:5}}>ID:{this.state.ID}   熟悉度:{this.state.familiar}         第{CurrentKnowLedgeIndex+1}/{this.state.KnowLedgeCount}条  {this.state.LearnTimes}次   </Text>
              </View> 
@@ -242,7 +242,7 @@ Mark=(Content)=>{
                           style={{marginLeft:5}}          
                           onPress={()=>this.Mark('记不清')}
                           title="记不清      (1天)"                
-                          color="#D32F2E"                        
+                          color="#FB7D81"                        
                           accessibilityLabel=""
                           />
                     </View>
@@ -251,7 +251,7 @@ Mark=(Content)=>{
                           style={{marginLeft:5}}      
                           onPress={()=>this.Mark('有点印象')}
                           title="有点印象  (7天)"                
-                          color="#435A62"                        
+                          color="#91D96C"                        
                           accessibilityLabel=""
                           />
                   </View>
@@ -260,7 +260,7 @@ Mark=(Content)=>{
                           style={{marginLeft:5}}      
                           onPress={()=>this.Mark('记住了')}
                           title="记住了    (45/90天)"                
-                          color="#4BAF4F"                        
+                          color="#85B0E7"                        
                           accessibilityLabel=""
                           />
                   </View>
@@ -269,7 +269,7 @@ Mark=(Content)=>{
                           style={{marginLeft:5}}       
                           onPress={()=>this.Mark('忘不了')}
                           title="忘不了    (90/180天)"                
-                          color="#01A9F2"                        
+                          color="#C185E5"                        
                           accessibilityLabel=""
                           />
                   </View>

@@ -39,8 +39,8 @@ SearchKnowLedge=()=>{
     .catch(e => alert(e))
 }
 
-gotoKnowLedge=(KnowLedgeID)=>{
-     this.props.navigation.navigate('ShowSearchKnowLedge', {KnowLedgeID: KnowLedgeID})
+gotoKnowLedge=(KnowLedgeID,category)=>{
+     this.props.navigation.navigate('ShowSearchKnowLedge', {KnowLedgeID: KnowLedgeID,category:category})
 
 }
  
@@ -80,9 +80,9 @@ gotoKnowLedge=(KnowLedgeID)=>{
                           return(
                               <View key={index}
                                   style={{backgroundColor:"white",flexDirection: 'row',justifyContent: 'flex-start',alignItems: 'flex-start',width:w,marginBottom:1}}>
-                                          <TouchableOpacity style={styles.textViewStyle} onPress={()=>this.gotoKnowLedge(result['ID'])} >
+                                          <TouchableOpacity style={styles.textViewStyle} onPress={()=>this.gotoKnowLedge(result['ID'],result['Lv1']+"-"+result['Lv2'])} >
                                                   <Text style={styles.textStyle}>{index+1}. {result['ask']}</Text>
-                                                  <Text style={{backgroundColor:"white",color:'#A7A7A7',fontSize:15,marginLeft:5,marginRight:5,marginBottom:5,lineHeight:30}}>ID:{result['ID']}   类别：{result['Lv1']}-{result['Lv2']}  熟悉度：{result['familiar']}</Text> 
+                                                  <Text style={{backgroundColor:"white",color:'#A7A7A7',fontSize:15,marginLeft:5,marginRight:5,marginBottom:5,lineHeight:30}}>ID:{result['ID']}   类别：{result['Lv1']}-{result['Lv2']}</Text> 
                                         </TouchableOpacity>
                            </View>
                           )
@@ -109,8 +109,8 @@ const styles = StyleSheet.create({
     marginLeft:w*0.01,
     marginRight:w*0.01,
     marginBottom:0,
-    marginTop:1,
-    height:70,
+    marginTop:2,
+    height:80,
     borderWidth:0,
     borderRadius:5,
   },

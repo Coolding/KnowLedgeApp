@@ -40,6 +40,7 @@ global.glTopCategory='';  //存储第一层级(根目录)的分类名称
 global.glCategoryCountInfo=new Array();  //存储云端数据库返回来的上下层目录对应信息，以及各分类下不同熟悉程度的知识数量统计
 
 
+
 export default class HomeScreen extends Component {
 
   constructor(props) {  

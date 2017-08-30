@@ -39,6 +39,8 @@ export default class Browse extends Component  {
     super(props); 
      this.state = {
        addCategoryName:'',
+       TodayReviewCount:0,   //今天应复习的知识数量
+       PastReviewCount:0,    //已超期未复习的知识数量
     }; 
   }  
 
@@ -60,6 +62,7 @@ synchronize=()=>{
                   glCategoryCountInfo[key]=data[key]                
                        } 
       glTopCategory=data['Lv0']    
+      this.setState({TodayReviewCount:data['TodayReviewCount'],PastReviewCount:data['PastReviewCount']})
       this.forceUpdate();
       //alert('同步完成')
  
@@ -104,6 +107,9 @@ browseKnowLedge=(Category,knowLedgeType)=>{
       this.props.navigation.navigate('ShowKnowledge', {Category: Category,knowLedgeType:knowLedgeType})
 
   }
+
+
+
 
 
   render() {
@@ -171,8 +177,27 @@ browseKnowLedge=(Category,knowLedgeType)=>{
                         })
                    
                   }
+                  <View style={{backgroundColor:"white",flexDirection: 'row',justifyContent: 'flex-start',alignItems: 'center',height:60,width:w}}>
+                            <View    style={{backgroundColor:"white",justifyContent: 'center',alignItems: 'center',marginLeft:w*0.02,height:60,width:0.5*w}}>
+                                    <TouchableOpacity  style={{flexDirection: 'row',justifyContent: 'flex-start',alignItems:'center'}}
+                                            onPress={()=> this.browseKnowLedge('',9)}>  
+                                            <Text>今日应复习：</Text>  
+                                            <View    style={{backgroundColor:"#C185E5",justifyContent: 'center',alignItems: 'center',marginLeft:w*0.02,height:40,width:40, borderColor: '#C185E5', borderWidth:1,borderRadius:20}}>
+                                                 <Text style={{color:"white"}}>{this.state.TodayReviewCount}</Text>
+                                            </View>
+                                    </TouchableOpacity>
+                            </View>  
+                            <View    style={{backgroundColor:"white",justifyContent: 'center',alignItems: 'flex-start',marginLeft:w*0.02,height:60,width:0.5*w}}>
+                                    <TouchableOpacity  style={{flexDirection: 'row',justifyContent: 'flex-start',alignItems:'center'}}
+                                            onPress={()=>this.browseKnowLedge('',10)}>  
+                                            <Text>已超期未复习：</Text>  
+                                            <View    style={{backgroundColor:"#C185E5",justifyContent: 'center',alignItems: 'center',marginLeft:w*0.02,height:40,width:40, borderColor: '#C185E5', borderWidth:1,borderRadius:20}}>
+                                                 <Text style={{color:"white"}}>{this.state.PastReviewCount}</Text>
+                                            </View>
+                                    </TouchableOpacity>
+                            </View>  
+                  </View>
                 </ScrollView>
-
             <View  style={{width:w*0.98,marginTop:10,height:40,flexDirection: 'row',alignItems:'flex-start',justifyContent: 'center',marginBottom:60}} >
                 <TextInput
                 style={{marginLeft:w*0.02,marginBottom:10,height:40,width:w*0.71, borderColor: 'gray', borderWidth:1,borderRadius:5}}

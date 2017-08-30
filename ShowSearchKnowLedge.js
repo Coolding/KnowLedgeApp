@@ -30,6 +30,7 @@ constructor(props) {
          answer:'',
          ID:'',
          familiar:'',
+         category:"",
  
     }; 
   }  
@@ -43,6 +44,7 @@ componentWillMount() {
   //获取知识内容
  
     const { params } = this.props.navigation.state;
+    this.setState ({category:params.category});
     
     let formData=new FormData();             
     formData.append("ID",params.KnowLedgeID);  
@@ -83,7 +85,7 @@ Mark=(Content)=>{
     fetch(url,{method:"POST",headers:{},body:formData}).then(response => response)
     .then(data => {console.log(data)})
    
-
+    this.props.navigation.goBack();
 }
 
 
@@ -95,14 +97,18 @@ Mark=(Content)=>{
        <View>
      
              <View style={styles.header}>  
-               
+                 <Text style={styles.headtitle}>{this.state.category}</Text> 
             </View>  
               
 
-             <View style={{backgroundColor:"white",justifyContent: 'center',alignItems: 'flex-start',width:w,height:70,marginBottom:1}}>
-                     <Text style={{backgroundColor:"white",fontSize:18,marginLeft:5,marginRight:5,marginBottom:5,lineHeight:40}}>{this.state.showAsk}</Text>
-                     <Text style={{backgroundColor:"white",color:'#A7A7A7',fontSize:15,marginLeft:5,marginRight:5,marginBottom:5,lineHeight:30}}>ID:{this.state.ID}   熟悉度:{this.state.familiar}  </Text>
+             <View style={{backgroundColor:"white",justifyContent: 'center',alignItems: 'flex-start',width:w,height:75,marginBottom:1}}>
+                     <Text style={{backgroundColor:"white",fontSize:18,marginLeft:5,marginRight:5,marginBottom:5,}}>{this.state.showAsk}</Text>
+                     <Text style={{backgroundColor:"white",color:'#A7A7A7',fontSize:15,marginLeft:5,marginRight:5,marginBottom:5}}>ID:{this.state.ID}   熟悉度:{this.state.familiar}  </Text>
              </View> 
+
+           
+
+
              <View style={{backgroundColor:"white",justifyContent: 'flex-start',alignItems: 'flex-start',width:w,height:360,marginBottom:0}}>
                <ScrollView>
                      <Text style={{backgroundColor:"white",fontSize:18,marginLeft:5,marginRight:5,marginBottom:5,fontFamily:'Verdana',textAlign:'auto'}}>{this.state.answer}</Text>
@@ -120,7 +126,7 @@ Mark=(Content)=>{
                     <View style={{backgroundColor:"white",justifyContent: 'center',alignItems: 'center',width:0.33*w,height:55,marginBottom:5}}>
                           <TouchableOpacity          
                               style={{borderColor: '#12B7F5', borderWidth:1,height:35,justifyContent: 'center',}}
-                              onPress={()=>this.props.navigation.navigate('index')}
+                              onPress={()=>this.props.navigation.goBack()}
                               >
                               <Text style={{color: '#12B7F5'}}>  返回  </Text>
                           </TouchableOpacity>
